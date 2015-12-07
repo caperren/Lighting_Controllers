@@ -25,7 +25,7 @@ void init_buttons() {
   pinMode(ENCODER_BUTTON_PIN, INPUT_PULLUP);
   pinMode(ON_OFF_BUTTON_PIN, INPUT_PULLUP);
   attachInterrupt(digitalPinToInterrupt(ENCODER_BUTTON_PIN), on_encoder_button_pressed, FALLING);
-  attachInterrupt(digitalPinToInterrupt(ON_OFF_BUTTON_PIN), on_on_off_button_pressed, FALLING);
+  attachInterrupt(digitalPinToInterrupt(ON_OFF_BUTTON_PIN), on_off_button_changed, CHANGE);
   if (use_serial) {
     Serial.println("Button Initialization Complete");
   }
