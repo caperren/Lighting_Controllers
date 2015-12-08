@@ -40,18 +40,22 @@ bool run_timer = false;
 unsigned long timer_end_time;
 
 ////////// Prototypes for display patterns //////////
-void rainbow();
-void rainbowWithGlitter();
+void rainbow_cyclical();
+void rainbow_cyclical_WithGlitter();
+void rainbow_full();
 void confetti();
 void sinelon();
 void bpm();
 void juggle();
 void northern_lights();
-void christmas();
+void northern_lights_cyclical();
+void northern_lights_random();
+void christmas_no_yellow();
+void christmas_with_yellow();
 
 // List of patterns to cycle through.  Each is defined as a separate function below.
 typedef void (*SimplePatternList[])();
-SimplePatternList gPatterns = { northern_lights, rainbow, rainbowWithGlitter, confetti, sinelon, juggle, bpm, christmas };
+SimplePatternList gPatterns = { northern_lights, northern_lights_cyclical, northern_lights_random, rainbow_cyclical, rainbow_cyclical_WithGlitter, rainbow_full, confetti, sinelon, juggle, bpm, christmas_no_yellow, christmas_with_yellow };
 
 void setup() {
   attempt_serial_init();
