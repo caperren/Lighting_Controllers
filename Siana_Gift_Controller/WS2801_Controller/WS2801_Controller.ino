@@ -35,7 +35,7 @@ unsigned int FRAMES_PER_SECOND = 120;
 #define ARRAY_SIZE(A) (sizeof(A) / sizeof((A)[0]))
 
 ////////// Timer Variables & Instantiations //////////
-const unsigned int timer_threshold = 1500; //
+const unsigned int timer_threshold = 1000; //
 bool run_timer = false;
 unsigned long timer_end_time;
 
@@ -50,12 +50,11 @@ void juggle();
 void northern_lights();
 void northern_lights_cyclical();
 void northern_lights_random();
-void christmas_no_yellow();
 void christmas_with_yellow();
 
 // List of patterns to cycle through.  Each is defined as a separate function below.
 typedef void (*SimplePatternList[])();
-SimplePatternList gPatterns = { northern_lights, northern_lights_cyclical, northern_lights_random, rainbow_cyclical, rainbow_cyclical_WithGlitter, rainbow_full, confetti, sinelon, juggle, bpm, christmas_no_yellow, christmas_with_yellow };
+SimplePatternList gPatterns = { northern_lights, northern_lights_cyclical, northern_lights_random, rainbow_cyclical, rainbow_cyclical_WithGlitter, rainbow_full, confetti, sinelon, juggle, bpm, christmas_with_yellow };
 
 void setup() {
   attempt_serial_init();

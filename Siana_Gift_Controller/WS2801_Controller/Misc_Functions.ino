@@ -13,9 +13,11 @@ void on_off_button_changed() {
   static unsigned long start_time;
 
   if (!digitalRead(ON_OFF_BUTTON_PIN)) {
-    start_time = millis();
-  }
+    if ((millis() - start_time) > button_debounce) {
+      start_time = millis();
+    }
 
+  }
   if (digitalRead(ON_OFF_BUTTON_PIN)) {
     if ((millis() - start_time) < timer_threshold) {
       if (!on_off_button_pressed) {
@@ -28,7 +30,11 @@ void on_off_button_changed() {
       if (use_serial) {
         Serial.println("ON/OFF Button Long Press");
       }
-      on_off_timer_pressed = true;
+      if (leds_on) {
+        if (!on_off_timer_pressed) {
+          on_off_timer_pressed = true;
+        }
+      }
     }
   }
 }
@@ -67,36 +73,36 @@ void check_mode_change() {
   }
 }
 
-void check_timer(){
-  if(on_off_timer_pressed){
-    
+void check_timer() {
+  if (on_off_timer_pressed) {
+
     delay(button_debounce);
 
     int temp = 4;
     long ten_min_intervals = 1;
     bool edit_timer = true;
 
-    while((!on_off_button_pressed) && edit_timer){
+    while ((!on_off_button_pressed) && edit_timer) {
       long encoder_position = myEnc.read();
-      if(encoder_position != encoder_position_previous){
+      if (encoder_position != encoder_position_previous) {
         temp += (encoder_position - encoder_position_previous);
         temp = constrain(temp, 4, 255);
-        ten_min_intervals = map(temp, 4, 255, 1, 50); 
+        ten_min_intervals = map(temp, 4, 255, 1, 50);
         encoder_position_previous = encoder_position;
       }
-      
+
       all_black();
-      for(int i = 0 ; i < ten_min_intervals ; i++){
+      for (int i = 0 ; i < ten_min_intervals ; i++) {
         leds[i] = CRGB::Blue;
       }
       FastLED.show();
-      
-      if(use_serial){
+
+      if (use_serial) {
         Serial.print("Ten Minute Interval: ");
         Serial.println((int)ten_min_intervals);
       }
 
-      if(encoder_button_pressed){
+      if (encoder_button_pressed) {
         run_timer = false;
         on_off_button_pressed = false;
         encoder_button_pressed = false;
@@ -104,28 +110,27 @@ void check_timer(){
       }
     }
 
-    if(on_off_button_pressed){
-      timer_end_time = millis() + (TEN_MIN_MILLIS*ten_min_intervals);
+    if (on_off_button_pressed) {
+      timer_end_time = millis() + (TEN_MIN_MILLIS * ten_min_intervals);
 
-      if(use_serial){
+      if (use_serial) {
         Serial.print("Timer End Time: ");
         Serial.println(timer_end_time);
       }
       run_timer = true;
       on_off_button_pressed = false;
     }
-    
+
     on_off_timer_pressed = false;
   }
 }
 
-void check_timer_elapsed(){
-  if(run_timer){
-    if(millis() > timer_end_time){
+void check_timer_elapsed() {
+  if (run_timer) {
+    if ((long)(millis() - timer_end_time) >= 0) {
       leds_on = false;
       run_timer = false;
-    }  
+    }
   }
-  
 }
 
