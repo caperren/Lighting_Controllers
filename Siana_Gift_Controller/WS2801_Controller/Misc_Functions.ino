@@ -2,40 +2,34 @@
 
 void on_encoder_button_pressed() {
   if (!encoder_button_pressed) {
-    if (use_serial) {
-      Serial.println("Encoder Button Pressed");
-    }
     encoder_button_pressed = true;
   }
 }
 
 void on_off_button_changed() {
-  static unsigned long start_time;
-
-  if (!digitalRead(ON_OFF_BUTTON_PIN)) {
-    if ((millis() - start_time) > button_debounce) {
+  static unsigned long start_time = millis();
+  static bool button_down = false;
+  //((long)(millis() - timer_end_time) >= 0)
+  if (!button_down) {
+    if (!digitalRead(ON_OFF_BUTTON_PIN)) {
       start_time = millis();
+      button_down = true;
+      delay(button_debounce);
     }
 
-  }
-  if (digitalRead(ON_OFF_BUTTON_PIN)) {
+  } else {
     if ((millis() - start_time) < timer_threshold) {
       if (!on_off_button_pressed) {
-        if (use_serial) {
-          Serial.println("ON/OFF Button Short Press");
-        }
         on_off_button_pressed = true;
       }
     } else {
-      if (use_serial) {
-        Serial.println("ON/OFF Button Long Press");
-      }
       if (leds_on) {
         if (!on_off_timer_pressed) {
           on_off_timer_pressed = true;
         }
       }
     }
+    button_down = false;
   }
 }
 
@@ -96,11 +90,6 @@ void check_timer() {
         leds[i] = CRGB::Blue;
       }
       FastLED.show();
-
-      if (use_serial) {
-        Serial.print("Ten Minute Interval: ");
-        Serial.println((int)ten_min_intervals);
-      }
 
       if (encoder_button_pressed) {
         run_timer = false;

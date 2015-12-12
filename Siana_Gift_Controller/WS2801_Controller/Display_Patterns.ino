@@ -98,11 +98,6 @@ void northern_lights_cyclical() {
   if (gHue > nlight_min) {
     for (int i = 0 ; i < NUM_LEDS ; i++) {
       leds[i] = CHSV(constrain(gHue + i, nlight_min, nlight_max), 255, 255);
-
-      if (use_serial) {
-        Serial.print("Constrained: ");
-        Serial.println(constrain(gHue + i, nlight_min, nlight_max));
-      }
     }
 
     if (gHue > nlight_max) {
@@ -111,11 +106,6 @@ void northern_lights_cyclical() {
   } else {
     for (int i = 0 ; i < NUM_LEDS ; i++) {
       leds[i] = CHSV(constrain(gHue + i, nlight_min, nlight_max), 255, 255);
-
-      if (use_serial) {
-        Serial.print("Constrained: ");
-        Serial.println(constrain(gHue + i, nlight_min, nlight_max));
-      }
     }
     if ((gHue + NUM_LEDS) < nlight_min) {
       nlight_dir = 1;
