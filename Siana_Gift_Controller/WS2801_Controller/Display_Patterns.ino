@@ -58,6 +58,7 @@ void sinelon()
 void nextPattern() {
   // add one to the current pattern number, and wrap around at the end
   gCurrentPatternNumber = (gCurrentPatternNumber + 1) % ARRAY_SIZE( gPatterns);
+  all_black();
 }
 
 void bpm()
@@ -169,6 +170,53 @@ void northern_lights() {
   }
 }
 
+void northern_lights_flowy() {
+  const unsigned char min_hue = 95;
+  const unsigned char max_hue = 200;
+  const unsigned char color_points[] = {min_hue, 147, max_hue};
+  const unsigned char step_size = 2;
+  static float percent = 0.0;
+  static char current_point = 0;
+  static unsigned char current_led = 0;
+  FRAMES_PER_SECOND = 120;
+  //fill_gradient(leds, NUM_LEDS, CHSV(min_hue, 255, 255), CHSV(max_hue, 255, 255));
+
+  if (gHue > max_hue) {
+    gHue = min_hue;
+  } else if (gHue < min_hue) {
+    gHue = min_hue;
+  }
+
+  if (current_led > NUM_LEDS) {
+    current_led = 0;
+  }
+
+  leds[current_led] = CHSV(gHue, 255, 255);
+
+  current_led++;
+  gHue += step_size;
+  //  for (int i = 0 ; i < NUM_LEDS ; i++) {
+  //    if ((percent + step_size) > 1.0) {
+  //      percent = 0;
+  //      current_point++;
+  //      if (current_point > ARRAY_SIZE(color_points)) {
+  //        current_point = 0;
+  //      }
+  //    }
+  //
+  //    percent = (percent + step_size);
+  //    leds[i] = blend(CHSV(color_points[current_point % ARRAY_SIZE(color_points)], 255, 255), CHSV(color_points[(current_point + 1) % ARRAY_SIZE(color_points)], 255, 255), percent);
+  //    if (use_serial) {
+  //      Serial.print("Color one: ");
+  //      Serial.print(color_points[current_point % ARRAY_SIZE(color_points)]);
+  //      Serial.print("\tColor two: ");
+  //      Serial.print(color_points[(current_point + 1) % ARRAY_SIZE(color_points)]);
+  //      Serial.print("\tPercent of two: ");
+  //      Serial.println(percent);
+  //    }
+  //  }
+}
+
 void christmas_no_yellow() {
   const char christmas_colors[] = {0, 96, 160};  //Red 0, Green 85, Blue 170, Yellow 43, Orange 21
   FRAMES_PER_SECOND = 30;
@@ -183,6 +231,31 @@ void christmas_with_yellow() {
   //fadeToBlackBy( leds, NUM_LEDS, 10);
   int pos = random16(NUM_LEDS);
   leds[pos] = CHSV( christmas_colors[random8(ARRAY_SIZE(christmas_colors))], 255, 255);
+}
+
+void lightning() {
+  static uint8_t frequency = 50;                                       // controls the interval between strikes
+  static uint8_t flashes = 8;                                          //the upper limit of flashes per strike
+  static unsigned int dimmer = 1;
+
+  static uint8_t ledstart;                                             // Starting location of a flash
+  static uint8_t ledlen;
+  FRAMES_PER_SECOND = 120;
+
+  ledstart = random8(NUM_LEDS);           // Determine starting location of flash
+  ledlen = random8(NUM_LEDS - ledstart);  // Determine length of flash (not to go beyond NUM_LEDS-1)
+  for (int flashCounter = 0; flashCounter < random8(3, flashes); flashCounter++) {
+    if (flashCounter == 0) dimmer = 5;    // the brightness of the leader is scaled down by a factor of 5
+    else dimmer = random8(1, 3);          // return strokes are brighter than the leader
+    fill_solid(leds + ledstart, ledlen, CHSV(255, 0, 255 / dimmer));
+    FastLED.show();                       // Show a section of LED's
+    delay(random8(4, 10));                // each flash only lasts 4-10 milliseconds
+    fill_solid(leds + ledstart, ledlen, CHSV(255, 0, 0)); // Clear the section of LED's
+    FastLED.show();
+    if (flashCounter == 0) delay (150);   // longer delay until next flash after the leader
+    delay(50 + random8(100));             // shorter delay between strokes
+  } // for()
+  delay(random8(frequency) * 100);        // delay between strikes
 }
 
 void all_black() {

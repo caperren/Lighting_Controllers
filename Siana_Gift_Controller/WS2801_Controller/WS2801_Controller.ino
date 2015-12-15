@@ -48,13 +48,30 @@ void sinelon();
 void bpm();
 void juggle();
 void northern_lights();
+void northern_lights_flowy();
 void northern_lights_cyclical();
 void northern_lights_random();
 void christmas_with_yellow();
+void lightning();
 
 // List of patterns to cycle through.  Each is defined as a separate function below.
 typedef void (*SimplePatternList[])();
-SimplePatternList gPatterns = { northern_lights, northern_lights_cyclical, northern_lights_random, rainbow_cyclical, rainbow_cyclical_WithGlitter, rainbow_full, confetti, sinelon, juggle, bpm, christmas_with_yellow };
+SimplePatternList gPatterns = { 
+  
+northern_lights,
+northern_lights_flowy, 
+northern_lights_cyclical, 
+northern_lights_random, 
+rainbow_cyclical, 
+rainbow_cyclical_WithGlitter, 
+rainbow_full,  
+confetti,
+lightning, 
+sinelon, 
+juggle, 
+christmas_with_yellow
+
+};
 
 void setup() {
   attempt_serial_init();
